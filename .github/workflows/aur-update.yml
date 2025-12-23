@@ -17,17 +17,17 @@ jobs:
         run: |
           docker build -t aur-updater .
 
-      - name: Run updater
+      - name: Run updater container
         env:
           PUSH_KEY: ${{ secrets.SERVER_CHAN_SENDKEY }}
-          AUR_SSH_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          AUR_SSH_KEY_BASE64: ${{ secrets.AUR_SSH_KEY_BASE64 }}
+          USERNAME: ${{ secrets.USERNAME }}
+          EMAIL: ${{ secrets.EMAIL }}
         run: |
-          # 创建SSH密钥文件
-          echo "$AUR_SSH_KEY" > ssh_key
-          chmod 600 ssh_key
-
-          # 运行Docker容器
+          # 运行 Docker 容器，在容器内设置 SSH 密钥
           docker run --rm \
             -e PUSH_KEY="$PUSH_KEY" \
-            -v $(pwd)/ssh_key:/home/builder/.ssh/id_rsa \
+            -e AUR_SSH_KEY_BASE64="$AUR_SSH_KEY_BASE64" \
+            -e USERNAME="$USERNAME" \
+            -e EMAIL="$EMAIL" \
             aur-updater

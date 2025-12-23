@@ -381,6 +381,3 @@ if [ -z "$PUSH_KEY" ]; then
     echo "错误: PUSH_KEY 环境变量未设置"
     exit 1
 fi
-
-# 执行主函数
-main
