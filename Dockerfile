@@ -16,13 +16,13 @@ RUN pacman -Syu --noconfirm && \
 RUN useradd -m -G wheel -s /bin/bash builder && \
     echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
+# 复制脚本（在切换用户之前）
+COPY ./updater.sh /home/builder/aur-update.sh
+RUN chmod +x /home/builder/aur-update.sh
+
 # 切换到builder用户
 USER builder
 WORKDIR /home/builder
-
-# 复制脚本
-COPY aur-update.sh /home/builder/aur-update.sh
-RUN chmod +x /home/builder/aur-update.sh
 
 # 配置git
 RUN git config --global user.name "GitHub Actions" && \
