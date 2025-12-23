@@ -1,4 +1,4 @@
-FROM archlinux/base:latest
+FROM archlinux:latest
 
 # 安装必要软件
 RUN pacman -Syu --noconfirm && \
