@@ -10,7 +10,8 @@ RUN pacman -Syu --noconfirm && \
     grep \
     bash \
     sudo \
-    pacman-contrib
+    pacman-contrib \
+    openssh \
 
 # 创建非root用户用于AUR构建
 RUN useradd -m -G wheel -s /bin/bash builder && \
