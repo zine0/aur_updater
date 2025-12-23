@@ -1,0 +1,33 @@
+name: AUR Package Update with Docker
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  update-aur:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build -t aur-updater .
+
+      - name: Run updater
+        env:
+          PUSH_KEY: ${{ secrets.SERVER_CHAN_SENDKEY }}
+          AUR_SSH_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+        run: |
+          # 创建SSH密钥文件
+          echo "$AUR_SSH_KEY" > ssh_key
+          chmod 600 ssh_key
+
+          # 运行Docker容器
+          docker run --rm \
+            -e PUSH_KEY="$PUSH_KEY" \
+            -v $(pwd)/ssh_key:/home/builder/.ssh/id_rsa \
+            aur-updater
