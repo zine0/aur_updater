@@ -16,7 +16,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.PUSH_CONTAINER }}
-      - name: Build Docker image
+
+      - name: Pull Docker image
         run: |
           docker pull ghcr.io/${{ github.actor }}/aur_updater:latest
 
@@ -28,7 +29,7 @@ jobs:
           EMAIL: ${{ secrets.EMAIL }}
         run: |
           # 运行 Docker 容器，在容器内设置 SSH 密钥
-          docker run ${{ github.actor }}/aur_updater:latest --rm \
+          docker run ghcr.io/${{ github.actor }}/aur_updater:latest --rm \
             -e PUSH_KEY="$PUSH_KEY" \
             -e AUR_SSH_KEY_BASE64="$AUR_SSH_KEY_BASE64" \
             -e USERNAME="$USERNAME" \
