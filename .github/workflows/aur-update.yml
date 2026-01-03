@@ -18,7 +18,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.PUSH_CONTAINER }}
 
       - name: Cache Docker images
         uses: actions/cache@v3
