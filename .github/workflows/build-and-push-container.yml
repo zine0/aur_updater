@@ -22,5 +22,8 @@ jobs:
       - name: Build and push container
         uses: docker/build-push-action@v6
         with:
+          registry: ghcr.io
           push: true
           tags: ${{ github.actor }}/aur_updater:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
