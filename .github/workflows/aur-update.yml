@@ -15,7 +15,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t aur-updater .
+          docker pull ghcr.io/${{ github.actor }}/aur_updater:latest
 
       - name: Run updater container
         env:
@@ -25,7 +25,7 @@ jobs:
           EMAIL: ${{ secrets.EMAIL }}
         run: |
           # 运行 Docker 容器，在容器内设置 SSH 密钥
-          docker run --rm \
+          docker run ${{ github.actor }}/aur_updater:latest --rm \
             -e PUSH_KEY="$PUSH_KEY" \
             -e AUR_SSH_KEY_BASE64="$AUR_SSH_KEY_BASE64" \
             -e USERNAME="$USERNAME" \
