@@ -2,8 +2,9 @@ name: Build and Push Container
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - "*.sh"
+      - "Dockerfile"
 
 jobs:
   build-and-push:
