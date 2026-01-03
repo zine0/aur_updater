@@ -10,17 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Login to Docker Hub
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.PUSH_CONTAINER }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Cache Docker images.
-        uses: ScribeMD/docker-cache@0.5.0
+      - name: Cache Docker images
+        uses: actions/cache@v3
         with:
-          key: docker-${{ runner.os }}-${{ hashFiles('Dockerfile') }}-${{ hashFiles('*.sh') }}
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
       - name: Run updater container
         env:
@@ -29,10 +35,11 @@ jobs:
           USERNAME: ${{ secrets.USERNAME }}
           EMAIL: ${{ secrets.EMAIL }}
         run: |
-          # 运行 Docker 容器，在容器内设置 SSH 密钥
-          docker run ghcr.io/${{ github.actor }}/aur_updater:latest --rm \
+          # 运行 Docker 容器
+          docker run \
+            --rm \
             -e PUSH_KEY="$PUSH_KEY" \
             -e AUR_SSH_KEY_BASE64="$AUR_SSH_KEY_BASE64" \
             -e USERNAME="$USERNAME" \
             -e EMAIL="$EMAIL" \
-            aur-updater
+            ghcr.io/${{ github.actor }}/aur_updater:latest
